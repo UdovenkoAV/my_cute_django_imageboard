@@ -1,0 +1,16 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>{{board_conf.name}}</title>
+    <link href="{% static 'css/board.css' %}" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    {% for board, board_cfg in boards_cfg %}
+    <h1><a href="/{{board}}">{{board_cfg.name}}</a></h1>
+    {% endfor %}
+  </body>
+
+</html>

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  {% for oppost, posts in threads_dic.items %}
+    <div class="thread">
+      <hr>
+      <div class="oppost">
+        {% block oppost %}
+          <h2><a href="/{{board_conf.slug}}/{{oppost.id}}"> [Open] </a></h2>
+          {% include "post.html" with post=oppost %}
+        {% endblock %}
+      </div>
+      {% if posts|length > 5 %}
+        <p>
+          {{posts|length|add:"-5"}} replies omitted. <a href="/{{board_conf.slug}}/{{oppost.id}}">Click here</a> to view.
+        </p>
+      {% endif %}
+      {%for post in posts|slice:":5"|slice:"::-1" %}
+      <table>
+        <td class="doubledash">>></td>
+        <td>
+          <div class="post" id="post_{{post.id}}">
+            {% block post %}
+              {% include "post.html" with post=post %}
+            {% endblock %}
+          </div>
+        </td>
+      </table>
+      {% endfor %}
+    </div>
+  {% endfor %}
+  <div>
+  {% block paginator %}
+    <hr>
+    {% include "pagination.html" with page=opposts %}
+  {% endblock %}
+  </div>
+{% endblock %}

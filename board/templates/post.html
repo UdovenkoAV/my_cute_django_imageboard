@@ -1,0 +1,58 @@
+<a name="{{post.id}}"></a>
+<label>
+  <span class="title">
+    {%if post.title %} {{ post.title }} {% endif %}
+  </span>
+  <span class="postername">
+    {% if post.email %}
+      <a href="mailto:{{post.email}}">{{post.username}}</a>
+    {% else %}
+      {{post.username}}
+    {% endif %}
+  </span>
+  {{ post.created }} <span class="reflink"> №
+  {% if threads_dic %}
+    <a href="/{{board_conf.slug}}/{{oppost.id}}#i{{post.id}}">{{post.id}}</a></span>
+  {% else %}
+    <a href="javascript:insert('>>{{post.id}}')">{{post.id}}</a></span>
+  {% endif %}
+</label>
+<br>
+<table>
+  {% if post.file %}
+  <span class="file_params">
+    <a href="{{MEDIA_URL}}{{post.file}}">{{post.get_file_name}}</a>
+    <em>{{post.get_file_size}}</em>
+  </span>
+    <td>
+      {% if post.is_file_img %}
+        <a href="javascript:view_img({{post.id}})">
+          <img class="thumb_img" id="img_{{post.id}}" src="{{MEDIA_URL}}{{post.thumbnail}}" data-full-src="{{MEDIA_URL}}{{post.file}}"
+               data-thumb-src="{{MEDIA_URL}}{{post.thumbnail}}" />
+        </a>
+
+      {% else %}
+        <a href="javascript:view_vid({{post.id}})">
+          <video class="thumb_vid" id="vid_{{post.id}}" src="{{MEDIA_URL}}{{post.file}}" width="150" height="150">
+            Sorry, your browser doesn't support embedded videos.
+          </video>
+        </a>
+      {% endif %}
+    </td>
+  {% endif %}
+  <br>
+    <td>
+      <blockquote>
+      {% if threads_dic %}
+        {% if post.body|safe|length > 1000 %}
+          {{ post.body|safe|slice:":1000:"|linebreaksbr }}
+      <p>Comment too long. <a href="/{{board_conf.slug}}/{{oppost.id}}">Click here</a> to view the full text.</p>
+        {% else %}
+          {{ post.body|safe|linebreaksbr }}
+        {% endif %}
+      {% else %}
+        {{post.body|safe|linebreaksbr}}
+      {% endif %}
+      </blockquote>
+    </td>
+</table>

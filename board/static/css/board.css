@@ -1,0 +1,53 @@
+* {
+    box-sizing:border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
+body{
+    background-color: #EEEEEE;
+}
+
+.logo {
+    border-bottom: 1px solid lightgrey;
+    padding-bottom: 10px;
+    text-align: center
+}
+
+.formarea {
+    margin-left: auto;
+    margin-right: auto;
+    width: 500px;
+}
+
+form {
+
+}
+
+.post {
+  width: 500px;
+  background-color: lightgray;
+}
+
+.postername {
+    color: green;
+}
+
+.title {
+    color: red;
+}
+
+.highlight {
+    width: 500px;
+    background-color: burlywood;
+}
+
+.quote_text {
+    color:#789922;
+}
+
+.file_params {
+    font-size:12px;
+}

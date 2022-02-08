@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+ <a href="/{{board_conf.slug}}"><h2>[Back]</h2></a>
+ <div class="oppost">
+   {% block oppost %}
+     {% include "post.html" with post=oppost %}
+   {% endblock %}
+ </div>
+
+ {%for post in posts%}
+   <table>
+     <td class="doubledash">>></td>
+     <td>
+       <div class="post" id="post_{{post.id}}">
+         {% block post %}
+           {% include "post.html" with post=post %}
+         {% endblock %}
+       </div>
+     </td>
+   </table>
+ {% endfor %}
+
+{% endblock %}
