@@ -19,12 +19,10 @@
       {%for post in posts|slice:":5"|slice:"::-1" %}
       <table>
         <td class="doubledash">>></td>
-        <td>
-          <div class="post" id="post_{{post.id}}">
-            {% block post %}
-              {% include "post.html" with post=post %}
-            {% endblock %}
-          </div>
+        <td class="post" id="post_{{post.id}}">
+          {% block post %}
+            {% include "post.html" with post=post %}
+          {% endblock %}
         </td>
       </table>
       {% endfor %}

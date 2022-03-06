@@ -1,6 +1,7 @@
 import os.path
 import re
-from pyffmpeg import FFmpeg
+import cv2
+import numpy as np
 from io import BytesIO
 from PIL import Image
 # from django.contrib.auth.models import User
@@ -26,11 +27,11 @@ class Post(models.Model):
     title = models.CharField(max_length=250, blank=True, null=True)
     username = models.CharField(max_length=250)
     email = models.CharField(max_length=250, blank=True, null=True)
-    file = models.FileField(upload_to='src'.format(BOARD_SLUG),
+    file = models.FileField(upload_to='src',
                             validators=[FileExtensionValidator(
                                 allowed_extensions=allowed_img_extensions+allowed_vid_extensions)],
                             blank=True, null=True)
-    thumbnail = models.ImageField(upload_to='thumb'.format(BOARD_SLUG), blank=True, null=True)
+    thumbnail = models.ImageField(upload_to='thumb', blank=True, null=True)
     body = models.TextField(max_length=15000)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -86,14 +87,11 @@ class Post(models.Model):
                     continue
 
                 if linked_post.is_oppost:
-                    self.body = self.body.replace(i, '<a href="/{}/{}">{}</a>'.format(self.BOARD_SLUG,
-                                                                                      post_id, i))
+                    self.body = self.body.replace(i, f'<a href="/{self.BOARD_SLUG}/{post_id}">{i}</a>')
                 else:
                     self.body = self.body.replace(i,
-                                                  '<a href="/{}/{}#{}" onclick="highlight({})">{}</a>' \
-                                                  .format(self.BOARD_SLUG,
-                                                          linked_post.oppost.id,
-                                                          post_id, post_id, i))
+                                                  f'<a href="/{self.BOARD_SLUG}/{linked_post.oppost.id}#'
+                                                  f'{post_id}" onclick="highlight({post_id})">{i}</a>')
 
         match = re.findall(r"\B\*\*[^\*{2}]+\*\*\B|\b__[^_{2}]+__\b", self.body)
 
@@ -112,6 +110,43 @@ class Post(models.Model):
         if match:
             for i in match:
                 self.body = self.body.replace(i, '<a href="{}">{}</a>'.format(i, i))
+
+    def create_vid_thumbnail(self):
+
+        def resize_image(image, size=(150, 150)):
+
+            h, w = image.shape[:2]
+            c = image.shape[2] if len(image.shape) > 2 else 1
+
+            if h == w:
+                return cv2.resize(image, size, cv2.INTER_AREA)
+
+            dif = h if h > w else w
+
+            interpolation = cv2.INTER_AREA if dif > (size[0] + size[1]) // 2 else cv2.INTER_CUBIC
+
+            x_pos = (dif - w) // 2
+            y_pos = (dif - h) // 2
+
+            if len(image.shape) == 2:
+               mask = np.zeros((dif, dif), dtype=image.dtype)
+               mask[y_pos:y_pos + h, x_pos:x_pos + w] = image[:h, :w]
+            else:
+               mask = np.zeros((dif, dif, c), dtype=image.dtype)
+               mask[y_pos:y_pos + h, x_pos:x_pos + w, :] = image[:h, :w, :]
+
+            return cv2.resize(mask, size, interpolation)
+
+        vidcap = cv2.VideoCapture(self.file.path)
+        file_name, _ = os.path.splitext(self.get_file_name())
+        vidcap.set(1, 1.0)
+        success, image = vidcap.read()
+        image = resize_image(image)
+        is_success, buffer = cv2.imencode(".jpg", image)
+        io_buf = BytesIO(buffer)
+        self.thumbnail.save(file_name + '.jpg', ContentFile(io_buf.read()), save=True)
+        io_buf.close()
+        return True
 
     def create_img_thumbnail(self):
 
@@ -152,6 +187,7 @@ class Post(models.Model):
             self.format_post_body()
             if self.is_file_img():
                 self.create_img_thumbnail()
+
 
         return super(Post, self).save(*args, **kwargs)
 

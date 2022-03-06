@@ -1,14 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .board_conf import boards
+from .board_settings import boards
 from datetime import datetime
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .apps import BoardConfig
 from django.http import Http404
 
 
 def index(request):
     boards_cfg = boards.items()
-    print(boards_cfg)
     return render(request, 'index.html', {'boards_cfg': boards_cfg})
 
 
@@ -66,3 +64,5 @@ def new_post(post, oppost=None, is_oppost=False):
     post.oppost = oppost
     post.is_oppost = is_oppost
     post.save()
+    if post.file and not post.is_file_img():
+        post.create_vid_thumbnail()

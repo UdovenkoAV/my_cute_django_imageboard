@@ -33,9 +33,8 @@
 
       {% else %}
         <a href="javascript:view_vid({{post.id}})">
-          <video class="thumb_vid" id="vid_{{post.id}}" src="{{MEDIA_URL}}{{post.file}}" width="150" height="150">
-            Sorry, your browser doesn't support embedded videos.
-          </video>
+          <img class="thumb_vid" id="vid_{{post.id}}" src="{{MEDIA_URL}}{{post.thumbnail}}" data-full-src="{{MEDIA_URL}}{{post.file}}"
+               data-thumb-src="{{MEDIA_URL}}{{post.thumbnail}}" />
         </a>
       {% endif %}
     </td>

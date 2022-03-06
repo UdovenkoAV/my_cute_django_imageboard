@@ -2,7 +2,7 @@ from .models import PostA, PostB
 from .forms import APostForm, BPostForm, ANewThreadForm, BNewThreadForm
 
 
-class DefaultConfig:
+class BoardSettings:
     name = 'board'
     slug = 'board'
     model = ''
@@ -13,7 +13,7 @@ class DefaultConfig:
     bump_limit = 500
 
 
-class ABoardConfig(DefaultConfig):
+class ABoardSettings(BoardSettings):
     name = 'Anime'
     slug = 'a'
     model = PostA
@@ -21,7 +21,7 @@ class ABoardConfig(DefaultConfig):
     new_thread_form = ANewThreadForm
 
 
-class BBoardConfig(DefaultConfig):
+class BBoardSettings(BoardSettings):
     name = 'Random'
     slug = 'b'
     model = PostB
@@ -30,6 +30,6 @@ class BBoardConfig(DefaultConfig):
 
 
 boards = {
-    'a': ABoardConfig,
-    'b': BBoardConfig,
+    'a': ABoardSettings,
+    'b': BBoardSettings,
 }

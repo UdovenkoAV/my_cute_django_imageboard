@@ -1,30 +1,36 @@
 "use strict";
 
+function close_vid(post) {
+	let video_tag = document.getElementById("vid_"+post);
+	let thumb_tag = document.createElement('img');
+	let close_button = document.getElementById("close_b_"+post);
+	thumb_tag.className = "thumb_vid";
+	thumb_tag.id = "vid_"+post;
+	thumb_tag.src = thumb_tag.dataset.thumbSrc = video_tag.dataset.thumbSrc;
+	thumb_tag.dataset.fullSrc = video_tag.dataset.fullSrc;
+	video_tag.replaceWith(thumb_tag);
+	close_button.remove();
+}
+
 function view_vid(post) {
 
-	let vid_tag = document.getElementById("vid_"+post);
-	if (vid_tag.className == "thumb_vid") {
-		vid_tag.controls = true;
-		vid_tag.className = "full_vid"
-	    vid_tag.height = vid_tag.videoHeight;
-	    vid_tag.width = vid_tag.videoWidth;
-	    vid_tag.onclick = 'close_video(post)';
-	}
-	else if (vid_tag.className == "full_vid") {
-		close_video(vid_tag, post);
+	if (document.getElementById("vid_"+post).className == "thumb_vid"){
+		let thumb_tag = document.getElementById("vid_"+post);
+	    let video_tag = document.createElement("video");
+		let close_batton = document.createElement('a');
+		close_batton.href = "javascript:close_vid("+post+")";
+		close_batton.id = "close_b_"+post
+		close_batton.innerText = '[CLOSE X]';
+	    video_tag.src = video_tag.dataset.fullSrc = thumb_tag.dataset.fullSrc;
+		video_tag.dataset.thumbSrc = thumb_tag.dataset.thumbSrc;
+	    video_tag.id = "vid_"+post;
+	    video_tag.controls = true;
+		thumb_tag.replaceWith(video_tag);
+		video_tag.before(close_batton);
 	}
 
 }
 
-function close_video(vid_tag, post) {
-
-	vid_tag.pause();
-	vid_tag.controls = false;
-	vid_tag.height = 150;
-	vid_tag.width = 150;
-	vid_tag.className = "thumb_vid";
-
-}
 
 function view_img(post) {
 

@@ -8,9 +8,14 @@
     <link href="{% static 'css/board.css' %}" rel="stylesheet" type="text/css">
   </head>
   <body>
-    {% for board, board_cfg in boards_cfg %}
-    <h1><a href="/{{board}}">{{board_cfg.name}}</a></h1>
-    {% endfor %}
+    <div class="logo">
+      <h1>Welcome to My Kawaii Imageboard</h1>
+    </div>
+    <div class="board_list">
+      {% for board, board_cfg in boards_cfg %}
+        <h2><a href="/{{board}}">{{board_cfg.name}}</a></h2>
+      {% endfor %}
+    </div>
   </body>
 
 </html>

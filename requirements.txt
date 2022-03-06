@@ -1,3 +1,4 @@
 Django==4.0.2
+numpy==1.21.4
+opencv_contrib_python==4.5.5.62
 Pillow==9.0.1
-pyffmpeg==2.2.0.1
